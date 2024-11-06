@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import logo from '../../assets/argentBankLogo.png';
+import './index.css'
 
 export function Header() {
     return (
@@ -15,10 +16,11 @@ export function Header() {
         />
         <h1 className="sr-only">Argent Bank</h1>
       </NavLink>
-       <div classNameName="link">
+       <div className="main-nav-item">
+        <i className="fa fa-user-circle"></i>
           <NavLink
             to="/connexion"
-            classNameName={({ isActive }) => (isActive ? 'active' : '')}
+            className={({ isActive }) => (isActive ? 'active' : '')}
           >
             Sign In
           </NavLink>
