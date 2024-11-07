@@ -1,5 +1,6 @@
 import { Header } from '../../containers/header';
 import { Form } from '../../components/form';
+import { Footer } from '../../containers/footer';
 
 
 export function Connexion() {
@@ -9,7 +10,10 @@ export function Connexion() {
       <Header />
     </div>
     <div>
-        <Form />
+      <Form />
+    </div>
+    <div>
+      <Footer />
     </div>
     </div>
   );
