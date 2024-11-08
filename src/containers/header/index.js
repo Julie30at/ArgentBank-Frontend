@@ -4,8 +4,7 @@ import './index.css'
 
 export function Header() {
     return (
-         <nav 
-         className="main-nav">
+         <nav className="main-nav">
       <NavLink 
       className="main-nav-logo" 
       to="/">
@@ -20,8 +19,7 @@ export function Header() {
         <i className="fa fa-user-circle"></i>
           <NavLink
             to="/connexion"
-            className={({ isActive }) => (isActive ? 'active' : '')}
-          >
+            className="a">
             Sign In
           </NavLink>
         </div>
