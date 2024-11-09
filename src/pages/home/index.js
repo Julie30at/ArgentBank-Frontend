@@ -1,21 +1,27 @@
+import { useState } from 'react';
 import { Header } from '../../containers/header/index';
 import { Footer } from '../../containers/footer';
 import { Banner } from '../../containers/banner';
 import { Features } from '../../containers/features';
 
 export function Home() {
+  // Récupérer le token et le username depuis le localStorage, si disponibles
+  const [token, setToken] = useState(localStorage.getItem('token') || '');
+  const [username, setUsername] = useState(localStorage.getItem('username') || '');
+
   return (
-    <body>
-   <div>
-      <Header />
-    </div>
-    <main>
-      <Banner />
-      <Features />
-    </main>
     <div>
+      <Header 
+        token={token} 
+        username={username} 
+        setToken={setToken} 
+        setUsername={setUsername} 
+      />
+      <main>
+        <Banner />
+        <Features />
+      </main>
       <Footer />
     </div>
-  </body>
   );
 }

@@ -31,3 +31,8 @@
   max-width: 100%;
   width: 200px;
 }
+
+.header-first-name {
+  font-weight: bold;
+  padding-right: 0.5rem;
+}
