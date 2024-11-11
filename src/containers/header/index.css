@@ -36,3 +36,35 @@
   font-weight: bold;
   padding-right: 0.5rem;
 }
+
+/* Header spécifique à la page d'édition */
+.main-nav.edit-page .edit-logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.main-nav.edit-page .icon-informative {
+  margin-right: 15px; /* Espacement entre l'icône informative et le logo */
+  color: #00bc77; /* Couleur de l'icône informative */
+}
+
+.main-nav.edit-page .main-nav-logo {
+  display: flex;
+  align-items: center;
+  margin-left: 10px; /* Ajouter un peu de marge à gauche pour éloigner l'icône informative */
+}
+
+.main-nav.edit-page .main-nav-item .fa,
+.main-nav.edit-page .header-first-name {
+  color: #00bc77; /* Appliquer la couleur verte */
+}
+
+.main-nav.edit-page .main-nav-item .a {
+  color: #00bc77; /* Appliquer la couleur verte sur les liens */
+}
+
+.main-nav.edit-page .main-nav-item .fa:hover,
+.main-nav.edit-page .main-nav-item .a:hover {
+  text-decoration: none; /* Eviter le soulignement lors du survol */
+}

@@ -1,26 +1,25 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Importer useNavigate
 import { Header } from "../../containers/header";
 import { Footer } from "../../containers/footer";
 import { Tags } from "../../components/tags";
+import { Button } from "../../components/button";
 import './index.css';
 
 export function User() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
-  const [profile, setProfile] = useState(null); // Pour stocker les infos du profil
-  const [isEditing, setIsEditing] = useState(false);
-  const [newUsername, setNewUsername] = useState(username);
+  const [profile, setProfile] = useState(null);
+  const navigate = useNavigate(); // Utiliser useNavigate pour la redirection
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
       setToken(storedToken);
-      // Récupérer le profil si le token est présent
       fetchProfile(storedToken);
     }
   }, []);
 
-  // Fonction pour récupérer le profil utilisateur
   const fetchProfile = async (token) => {
     try {
       const response = await fetch('http://localhost:3001/api/v1/user/profile', {
@@ -33,7 +32,7 @@ export function User() {
 
       if (response.ok) {
         const data = await response.json();
-        setProfile(data.body); // Stocker les données du profil dans le state
+        setProfile(data.body);
       } else {
         throw new Error('Erreur de récupération du profil');
       }
@@ -42,34 +41,33 @@ export function User() {
     }
   };
 
+  // Fonction pour gérer le clic et rediriger vers /edit
   const handleEditClick = () => {
-    if (isEditing) {
-      localStorage.setItem('username', newUsername); // Mettre à jour le nom d'utilisateur dans localStorage
-      setUsername(newUsername);
-    }
-    setIsEditing(!isEditing);
+    navigate('/edit');
   };
 
-  useEffect(() => {
-    setNewUsername(username);
-  }, [username]);
-
-  // Extraire prénom et nom du profil
-  const firstName = profile?.firstName || 'User'; // Si le prénom est disponible dans le profil
-  const lastName = profile?.lastName || ''; // Si le nom est disponible dans le profil
+  const firstName = profile?.firstName || 'User';
+  const lastName = profile?.lastName || '';
 
   return (
     <div>
-      <Header token={token} username={username} setToken={setToken} setUsername={setUsername} />
+      <Header 
+        token={token} 
+        username={username} 
+        setToken={setToken} 
+        setUsername={setUsername} 
+        pageType="user" // Ajout de la prop pageType pour indiquer que c'est la page de l'utilisateur
+      />
       <main className="main bg-dark">
         <div className="header">
           <h1>
             Welcome back <br />
-           {firstName} {lastName} ! <br />
+            {firstName} {lastName} ! <br />
           </h1>
-          <button className="edit-button" onClick={handleEditClick}>
-            {isEditing ? 'Save Name' : 'Edit Name'}
-          </button>
+          <Button
+            label="Edit Name"
+            onClick={handleEditClick} // Utilise handleEditClick pour la redirection
+          />
         </div>
         <h2 className="sr-only">Accounts</h2>
         <Tags />

@@ -16,6 +16,7 @@ export function Home() {
         username={username} 
         setToken={setToken} 
         setUsername={setUsername} 
+        pageType="home"  // Définir le type de page ici
       />
       <main>
         <Banner />

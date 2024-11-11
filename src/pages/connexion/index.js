@@ -8,11 +8,17 @@ export function Connexion() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
 
- return (
-  <div>
-    <Header token={token} username={username} setToken={setToken} setUsername={setUsername} />
-    <Form />
-    <Footer />
-  </div>
-);
+  return (
+    <div>
+      <Header 
+        token={token} 
+        username={username} 
+        setToken={setToken} 
+        setUsername={setUsername} 
+        pageType="connexion"  // Ajout de la prop pageType pour indiquer que c'est la page de connexion
+      />
+      <Form />
+      <Footer />
+    </div>
+  );
 }
