@@ -1,8 +1,10 @@
-import './index.css'
+import React from 'react';
+import './index.css';
+import { Button } from '../button';
 
-export function Tags(){
-    return(
-        <div>
+export function Tags() {
+  return (
+    <div>
       <section className="account">
         <div className="account-content-wrapper">
           <h3 className="account-title">Argent Bank Checking (x8349)</h3>
@@ -10,9 +12,10 @@ export function Tags(){
           <p className="account-amount-description">Available Balance</p>
         </div>
         <div className="account-content-wrapper cta">
-          <button className="transaction-button">View transactions</button>
+          <Button label="View transactions" to="/transactions" type="transaction" />
         </div>
       </section>
+
       <section className="account">
         <div className="account-content-wrapper">
           <h3 className="account-title">Argent Bank Savings (x6712)</h3>
@@ -20,9 +23,10 @@ export function Tags(){
           <p className="account-amount-description">Available Balance</p>
         </div>
         <div className="account-content-wrapper cta">
-          <button className="transaction-button">View transactions</button>
+          <Button label="View transactions" to="/transactions" type="transaction" />
         </div>
       </section>
+
       <section className="account">
         <div className="account-content-wrapper">
           <h3 className="account-title">Argent Bank Credit Card (x8349)</h3>
@@ -30,9 +34,9 @@ export function Tags(){
           <p className="account-amount-description">Current Balance</p>
         </div>
         <div className="account-content-wrapper cta">
-          <button className="transaction-button">View transactions</button>
+          <Button label="View transactions" to="/transactions" type="transaction" />
         </div>
       </section>
-      </div>
-    );
+    </div>
+  );
 }
