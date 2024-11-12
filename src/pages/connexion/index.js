@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Header } from '../../containers/header';
+import { Header } from '../../components/header';
 import { Form } from '../../components/form';
-import { Footer } from '../../containers/footer';
+import { Footer } from '../../components/footer';
 
 export function Connexion() {
   

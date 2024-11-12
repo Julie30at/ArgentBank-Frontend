@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; 
-import { Header } from "../../containers/header";
-import { Footer } from "../../containers/footer";
+import { Header } from "../../components/header";
+import { Footer } from "../../components/footer";
 import { Tags } from "../../components/tags";
 import { Button } from "../../components/button";
 import './index.css';
@@ -69,8 +69,8 @@ export function User() {
           />
         </div>
         <h2 className="sr-only">Accounts</h2>
-        <Tags />
-      </main>
+      <Tags isTransactionPage={false} />     
+       </main>
       <Footer />
     </div>
   );

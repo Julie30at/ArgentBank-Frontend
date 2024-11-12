@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Header } from '../../containers/header/index';
-import { Footer } from '../../containers/footer';
+import { Header } from '../../components/header/index';
+import { Footer } from '../../components/footer';
 import { Tags } from '../../components/tags';
 
 export function Edit() {

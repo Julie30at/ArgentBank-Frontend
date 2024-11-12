@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Header } from '../../containers/header/index';
-import { Footer } from '../../containers/footer';
-import { Banner } from '../../containers/banner';
-import { Features } from '../../containers/features';
+import { Header } from '../../components/header/index';
+import { Footer } from '../../components/footer';
+import { Banner } from '../../components/banner';
+import { Features } from '../../components/features';
 
 export function Home() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');

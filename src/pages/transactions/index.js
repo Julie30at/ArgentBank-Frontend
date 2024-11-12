@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Footer } from "../../containers/footer";
-import { Header } from "../../containers/header";
+import { Footer } from "../../components/footer";
+import { Header } from "../../components/header";
+import { Tags } from '../../components/tags';
 
 export function Transactions() {
     const [token, setToken] = useState(localStorage.getItem('token') || '');
@@ -14,7 +15,9 @@ export function Transactions() {
         setUsername={setUsername} 
         pageType="edit"
       />
-      <main></main>
+      <main>
+        <Tags isTransactionPage={true} />
+      </main>
       <Footer />
          </div>
     );
