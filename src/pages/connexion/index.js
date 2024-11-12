@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Header } from '../../components/header';
-import { Form } from '../../components/form';
+import { SignInContent } from '../../components/SignInContent';
 import { Footer } from '../../components/footer';
 
 export function Connexion() {
@@ -17,7 +17,7 @@ export function Connexion() {
         setUsername={setUsername} 
         pageType="connexion"  
       />
-      <Form />
+      <SignInContent />
       <Footer />
     </div>
   );
