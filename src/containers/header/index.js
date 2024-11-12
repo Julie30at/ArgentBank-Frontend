@@ -9,7 +9,7 @@ export function Header({ token, username, setToken, setUsername, pageType }) {
   useEffect(() => {
     const storedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
     const storedUsername = localStorage.getItem('username') || sessionStorage.getItem('username');
-    // Mettre à jour l'état seulement si les valeurs sont absentes
+    // Met à jour l'état seulement si les valeurs sont absentes
     if (!token && storedToken) setToken(storedToken);
     if (!username && storedUsername) setUsername(storedUsername);
   }, [token, username, setToken, setUsername]);
@@ -21,7 +21,7 @@ export function Header({ token, username, setToken, setUsername, pageType }) {
     sessionStorage.removeItem('username');
     setToken('');
     setUsername('');
-    navigate('/'); // Rediriger vers la page d'accueil
+    navigate('/'); 
   };
 
   const formatName = (name) => {
@@ -34,7 +34,6 @@ export function Header({ token, username, setToken, setUsername, pageType }) {
   return (
     <nav className={`main-nav ${pageType === 'edit' ? 'edit-page' : ''}`}>
       <div className='edit-logo'>
-      {/* Afficher une icône informative sur la page /edit */}
       {pageType === 'edit' && (
         <span className="fa fa-edit icon-informative"></span> // Icône informative
       )}
@@ -44,7 +43,6 @@ export function Header({ token, username, setToken, setUsername, pageType }) {
       </NavLink>
       </div>
       <div className="main-nav-item">
-        {/* Afficher les éléments à droite dans l'ordre voulu sur /edit */}
         {pageType === 'edit' ? (
           <>
             {/* Prénom */}

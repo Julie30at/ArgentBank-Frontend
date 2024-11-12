@@ -12,11 +12,10 @@ export function Edit() {
   const [lastName, setLastName] = useState(localStorage.getItem('lastName') || sessionStorage.getItem('lastName') || '');
   const [userName, setUserName] = useState(''); // Initialiser sans valeur
 
-  // Mise à jour de `userName` après le premier rendu pour éviter la valeur vide
   useEffect(() => {
     const storedUserName = localStorage.getItem('username');
     if (storedUserName) {
-      setUserName(storedUserName); // Mettre à jour l'état avec la valeur stockée
+      setUserName(storedUserName); // Met à jour l'état avec la valeur stockée
     }
   }, []); // Déclenche au premier rendu
 
@@ -29,7 +28,7 @@ export function Edit() {
   };
 
   const handleCancel = () => {
-    setUserName(username); // Restaurer la valeur initiale de `username`
+    setUserName(username); // Restaure la valeur initiale de `username`
     setFirstName(localStorage.getItem('firstName') || sessionStorage.getItem('firstName') || '');
     setLastName(localStorage.getItem('lastName') || sessionStorage.getItem('lastName') || '');
   };

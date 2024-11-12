@@ -5,7 +5,6 @@ import { Banner } from '../../containers/banner';
 import { Features } from '../../containers/features';
 
 export function Home() {
-  // Récupérer le token et le username depuis le localStorage, si disponibles
   const [token, setToken] = useState(localStorage.getItem('token') || '');
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
 
@@ -16,7 +15,7 @@ export function Home() {
         username={username} 
         setToken={setToken} 
         setUsername={setUsername} 
-        pageType="home"  // Définir le type de page ici
+        pageType="home"  
       />
       <main>
         <Banner />

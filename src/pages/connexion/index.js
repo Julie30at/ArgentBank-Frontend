@@ -4,7 +4,7 @@ import { Form } from '../../components/form';
 import { Footer } from '../../containers/footer';
 
 export function Connexion() {
-  // Déclarez les états pour le token et le username
+  
   const [token, setToken] = useState(localStorage.getItem('token') || '');
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
 
@@ -15,7 +15,7 @@ export function Connexion() {
         username={username} 
         setToken={setToken} 
         setUsername={setUsername} 
-        pageType="connexion"  // Ajout de la prop pageType pour indiquer que c'est la page de connexion
+        pageType="connexion"  
       />
       <Form />
       <Footer />

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Importer useNavigate
+import { useNavigate } from "react-router-dom"; 
 import { Header } from "../../containers/header";
 import { Footer } from "../../containers/footer";
 import { Tags } from "../../components/tags";
@@ -10,7 +10,7 @@ export function User() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
   const [username, setUsername] = useState(localStorage.getItem('username') || '');
   const [profile, setProfile] = useState(null);
-  const navigate = useNavigate(); // Utiliser useNavigate pour la redirection
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
@@ -41,7 +41,6 @@ export function User() {
     }
   };
 
-  // Fonction pour gérer le clic et rediriger vers /edit
   const handleEditClick = () => {
     navigate('/edit');
   };
@@ -56,7 +55,7 @@ export function User() {
         username={username} 
         setToken={setToken} 
         setUsername={setUsername} 
-        pageType="user" // Ajout de la prop pageType pour indiquer que c'est la page de l'utilisateur
+        pageType="user" 
       />
       <main className="main bg-dark">
         <div className="header">
@@ -66,7 +65,7 @@ export function User() {
           </h1>
           <Button
             label="Edit Name"
-            onClick={handleEditClick} // Utilise handleEditClick pour la redirection
+            onClick={handleEditClick} 
           />
         </div>
         <h2 className="sr-only">Accounts</h2>
