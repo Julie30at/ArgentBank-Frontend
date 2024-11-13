@@ -30,6 +30,7 @@ export function SignInContent() {
       console.log("Réponse complète de l'API :", data); 
 
       if (!response.ok) {
+        setError("Email ou mot de passe incorrect")
         throw new Error(data.message || 'Email ou mot de passe incorrect');
       }
 
@@ -111,6 +112,7 @@ export function SignInContent() {
               autoComplete="current-password"
             />
           </div>
+          {error && <p className="error-message">{error}</p>}
           <div className="input-remember">
             <input
               type="checkbox"
@@ -120,7 +122,6 @@ export function SignInContent() {
             />
             <label htmlFor="remember-me">Remember me</label>
           </div>
-          {error && <p className="error-message">{error}</p>}
           <button type="submit" className="sign-in-button">Sign In</button>
         </form>
       </section>
