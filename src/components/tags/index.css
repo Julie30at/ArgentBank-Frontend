@@ -35,6 +35,24 @@
   flex: 1;
 }
 
+.account-edit {
+  border-radius: 5px; 
+  background-color: rgb(43, 40, 40);
+  padding: 2rem 1.5rem;
+  width: 95%; 
+}
+
+.account-edit .account-title,
+.account-edit .account-amount,
+.account-edit .account-amount-description {
+  color: white; 
+}
+
+.arrow-right {
+  color: white;
+  font-size: 60px;
+}
+
 @media (min-width: 720px) {
   .account {
     flex-direction: row;

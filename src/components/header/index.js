@@ -35,7 +35,7 @@ export function Header({ token, username, setToken, setUsername, pageType }) {
     <nav className={`main-nav ${pageType === 'edit' ? 'edit-page' : ''}`}>
       <div className='edit-logo'>
       {pageType === 'edit' && (
-        <span className="fa fa-edit icon-informative"></span> // Icône informative
+        <span className="fa fa-edit icon-informative"></span> 
       )}
       <NavLink className="main-nav-logo" to="/">
         <img className="main-nav-logo-image" src={logo} alt="Argent Bank Logo" />
@@ -45,22 +45,19 @@ export function Header({ token, username, setToken, setUsername, pageType }) {
       <div className="main-nav-item">
         {pageType === 'edit' ? (
           <>
-            {/* Prénom */}
             <span className="header-first-name">{firstName}</span>
-            {/* Icône user circle */}
             <span className="fa fa-user-circle"></span>
-            {/* Icône molette pour paramètres */}
+            <div className='edit-link'>
             <NavLink to="/user" className="a">
-              <span className="fa fa-cogs"></span> {/* Icône paramètres */}
+              <span className="fa fa-solid fa-gear"></span> 
             </NavLink>
-            {/* Icône d'arrêt */}
             <NavLink to="/" onClick={handleLogout} className="a sign-out-link">
-              <span className="fa fa-power-off"></span> {/* Icône arrêt */}
+              <span className="fa fa-power-off"></span>
             </NavLink>
+            </div>
           </>
         ) : (
           <>
-            {/* Afficher pour les autres pages */}
             <span className="fa fa-user-circle"></span>
             {token ? (
               <>

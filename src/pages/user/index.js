@@ -69,7 +69,7 @@ export function User() {
           />
         </div>
         <h2 className="sr-only">Accounts</h2>
-      <Tags isTransactionPage={false} />     
+      <Tags isUserPage={true} />     
        </main>
       <Footer />
     </div>

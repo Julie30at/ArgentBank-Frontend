@@ -42,29 +42,45 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
 }
 
 .main-nav.edit-page .icon-informative {
-  margin-right: 15px; /* Espacement entre l'icône informative et le logo */
-  color: #00bc77; /* Couleur de l'icône informative */
+  color: #00bc77; 
+  font-size: 35px;
 }
 
 .main-nav.edit-page .main-nav-logo {
   display: flex;
   align-items: center;
-  margin-left: 10px; /* Ajouter un peu de marge à gauche pour éloigner l'icône informative */
 }
 
-.main-nav.edit-page .main-nav-item .fa,
+.main-nav.edit-page .main-nav-item {
+  align-items: center;
+}
+
+.main-nav.edit-page .edit-link {
+  display: flex;
+  gap: 30px;
+  margin-left: 30px;
+}
+
+.main-nav.edit-page .main-nav-item .fa {
+  color: #00bc77; 
+  font-size: 35px;
+}
+
 .main-nav.edit-page .header-first-name {
-  color: #00bc77; /* Appliquer la couleur verte */
+font-size: 18px;
+color: #00bc77;
+font-weight: 200;
 }
 
 .main-nav.edit-page .main-nav-item .a {
-  color: #00bc77; /* Appliquer la couleur verte sur les liens */
+  color: #00bc77; 
 }
 
 .main-nav.edit-page .main-nav-item .fa:hover,
 .main-nav.edit-page .main-nav-item .a:hover {
-  text-decoration: none; /* Eviter le soulignement lors du survol */
+  text-decoration: none; 
 }

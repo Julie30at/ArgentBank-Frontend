@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Header } from '../../components/header/index';
 import { Footer } from '../../components/footer';
 import { Tags } from '../../components/tags';
+import './index.css';
 
 export function Edit() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
@@ -44,10 +45,10 @@ export function Edit() {
       />
       <main>
         <div className="form-container">
-          <h2>Edit User Info</h2>
+          <h2 className='edit-title'>Edit user info</h2>
           <form onSubmit={handleSave}>
             <div className="form-group">
-              <label htmlFor="username">User Name</label>
+              <label htmlFor="username">User name: </label>
               <input 
                 type="text" 
                 id="username" 
@@ -58,7 +59,7 @@ export function Edit() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="firstname">First Name</label>
+              <label htmlFor="firstname">First name: </label>
               <input 
                 type="text" 
                 id="firstname" 
@@ -69,7 +70,7 @@ export function Edit() {
               />
             </div>
             <div className="form-group">
-              <label htmlFor="lastname">Last Name</label>
+              <label htmlFor="lastname">Last name: </label>
               <input 
                 type="text" 
                 id="lastname" 
@@ -85,8 +86,8 @@ export function Edit() {
             </div>
           </form>
         </div>
-        <Tags />
-      </main>
+     <Tags isEditPage={true} />  
+     </main>
       <Footer />
     </div>
   );
