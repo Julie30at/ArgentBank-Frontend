@@ -5,16 +5,17 @@ import { Tags } from '../../components/tags';
 import './index.css';
 
 export function Edit() {
-  const [token, setToken] = useState(localStorage.getItem('token') || '');
-  const [username, setUsername] = useState(localStorage.getItem('username') || '');
-  
   // Utilisation de sessionStorage et localStorage pour récupérer les informations
-  const [firstName, setFirstName] = useState(localStorage.getItem('firstName') || sessionStorage.getItem('firstName') || '');
-  const [lastName, setLastName] = useState(localStorage.getItem('lastName') || sessionStorage.getItem('lastName') || '');
-  const [userName, setUserName] = useState(''); // Initialiser sans valeur
+  const [token, setToken] = useState(sessionStorage.getItem('token') || localStorage.getItem('token') || '');
+  const [username, setUsername] = useState(sessionStorage.getItem('username') || localStorage.getItem('username') || '');
+  
+  // Pour les informations du profil, vérifie sessionStorage puis localStorage
+  const [firstName, setFirstName] = useState(sessionStorage.getItem('firstName') || localStorage.getItem('firstName') || '');
+  const [lastName, setLastName] = useState(sessionStorage.getItem('lastName') || localStorage.getItem('lastName') || '');
+  const [userName, setUserName] = useState(username); // Initialise avec la valeur de `username` 
 
   useEffect(() => {
-    const storedUserName = localStorage.getItem('username');
+    const storedUserName = sessionStorage.getItem('username') || localStorage.getItem('username');
     if (storedUserName) {
       setUserName(storedUserName); // Met à jour l'état avec la valeur stockée
     }
@@ -26,12 +27,16 @@ export function Edit() {
     // Mise à jour du localStorage et sessionStorage si nécessaire
     localStorage.setItem('username', userName); 
     sessionStorage.setItem('username', userName);
+    localStorage.setItem('firstName', firstName); 
+    sessionStorage.setItem('firstName', firstName);
+    localStorage.setItem('lastName', lastName); 
+    sessionStorage.setItem('lastName', lastName);
   };
 
   const handleCancel = () => {
     setUserName(username); // Restaure la valeur initiale de `username`
-    setFirstName(localStorage.getItem('firstName') || sessionStorage.getItem('firstName') || '');
-    setLastName(localStorage.getItem('lastName') || sessionStorage.getItem('lastName') || '');
+    setFirstName(sessionStorage.getItem('firstName') || localStorage.getItem('firstName') || '');
+    setLastName(sessionStorage.getItem('lastName') || localStorage.getItem('lastName') || '');
   };
 
   return (
@@ -86,7 +91,7 @@ export function Edit() {
             </div>
           </form>
         </div>
-     <Tags isEditPage={true} />  
+        <Tags isEditPage={true} />  
      </main>
       <Footer />
     </div>

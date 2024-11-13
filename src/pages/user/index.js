@@ -7,13 +7,14 @@ import { Button } from "../../components/button";
 import './index.css';
 
 export function User() {
-  const [token, setToken] = useState(localStorage.getItem('token') || '');
-  const [username, setUsername] = useState(localStorage.getItem('username') || '');
+  // Priorise sessionStorage, puis localStorage
+  const [token, setToken] = useState(sessionStorage.getItem('token') || localStorage.getItem('token') || '');
+  const [username, setUsername] = useState(sessionStorage.getItem('username') || localStorage.getItem('username') || '');
   const [profile, setProfile] = useState(null);
   const navigate = useNavigate(); 
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
+    const storedToken = sessionStorage.getItem('token') || localStorage.getItem('token');
     if (storedToken) {
       setToken(storedToken);
       fetchProfile(storedToken);
