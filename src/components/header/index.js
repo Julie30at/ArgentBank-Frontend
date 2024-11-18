@@ -12,6 +12,7 @@ export function Header({ pageType }) {
 
   // Récupérer le token et l'utilisateur depuis Redux
   const { token, user } = useSelector((state) => state.auth);
+  console.log(user)
 
   useEffect(() => {
     // Charger les données du profil si le token est présent
@@ -30,7 +31,7 @@ export function Header({ pageType }) {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
 
-  const firstName = user?.firstName ? formatName(user.firstName) : 'User';
+  const userName = user?.userName ? formatName(user.userName) : 'User';
 
   return (
     <nav className={`main-nav ${pageType === 'edit' ? 'edit-page' : ''}`}>
@@ -46,7 +47,7 @@ export function Header({ pageType }) {
       <div className="main-nav-item">
         {pageType === 'edit' ? (
           <>
-            <span className="header-first-name">{firstName}</span>
+            <span className="header-first-name">{userName}</span>
             <span className="fa fa-user-circle"></span>
             <div className='edit-link'>
             <NavLink to="/user" className="a">
@@ -63,7 +64,7 @@ export function Header({ pageType }) {
             {token ? (
               <>
                 <NavLink to="/user" className="a header-first-name">
-                  {firstName}
+                  {userName}
                 </NavLink>
                 <NavLink to="/" onClick={handleLogout} className="a sign-out-link">
                   <span className="fa fa-sign-out"></span> Sign Out

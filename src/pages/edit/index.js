@@ -19,7 +19,7 @@ export function Edit() {
   }, [dispatch, token, isAuthenticated]);
 
   // Initialisation des états pour le profil
-  const [userName, setUserName] = useState(user?.username || '');
+  const [userName, setUserName] = useState(user?.userName || '');
   const [firstName, setFirstName] = useState(user?.firstName || '');
   const [lastName, setLastName] = useState(user?.lastName || '');
 
@@ -33,7 +33,7 @@ export function Edit() {
 
   // Gestion de l'annulation des modifications
   const handleCancel = () => {
-    setUserName(user?.username || ''); // Restaure les données initiales
+    setUserName(user?.userName || ''); // Restaure les données initiales
     setFirstName(user?.firstName || '');
     setLastName(user?.lastName || '');
   };
