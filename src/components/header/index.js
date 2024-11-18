@@ -1,27 +1,28 @@
 import { useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../redux/auth/authSlice'; // Redux action pour la déconnexion
+import { fetchProfile } from '../../redux/auth/authSlice'; // Thunk pour charger le profil
 import logo from '../../assets/argentBankLogo.webp';
 import './index.css';
 
-export function Header({ token, username, setToken, setUsername, pageType }) {
+export function Header({ pageType }) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // Récupérer le token et l'utilisateur depuis Redux
+  const { token, user } = useSelector((state) => state.auth);
+
   useEffect(() => {
-    const storedToken = localStorage.getItem('token') || sessionStorage.getItem('token');
-    const storedUsername = localStorage.getItem('username') || sessionStorage.getItem('username');
-    // Met à jour l'état seulement si les valeurs sont absentes
-    if (!token && storedToken) setToken(storedToken);
-    if (!username && storedUsername) setUsername(storedUsername);
-  }, [token, username, setToken, setUsername]);
+    // Charger les données du profil si le token est présent
+    if (token && !user) {
+      dispatch(fetchProfile(token));
+    }
+  }, [token, user, dispatch]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('username');
-    setToken('');
-    setUsername('');
-    navigate('/'); 
+    dispatch(logout());
+    navigate('/');
   };
 
   const formatName = (name) => {
@@ -29,7 +30,7 @@ export function Header({ token, username, setToken, setUsername, pageType }) {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
 
-  const firstName = formatName(username);
+  const firstName = user?.firstName ? formatName(user.firstName) : 'User';
 
   return (
     <nav className={`main-nav ${pageType === 'edit' ? 'edit-page' : ''}`}>

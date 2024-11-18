@@ -1,53 +1,46 @@
 import { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Header } from '../../components/header/index';
 import { Footer } from '../../components/footer';
 import { Tags } from '../../components/tags';
+import { fetchProfile } from '../../redux/auth/authSlice'; // Import de la fonction pour récupérer le profil
 import './index.css';
 
 export function Edit() {
-  // Utilisation de sessionStorage et localStorage pour récupérer les informations
-  const [token, setToken] = useState(sessionStorage.getItem('token') || localStorage.getItem('token') || '');
-  const [username, setUsername] = useState(sessionStorage.getItem('username') || localStorage.getItem('username') || '');
+  // Accéder aux données du store Redux
+  const dispatch = useDispatch();
+  const { token, user, isAuthenticated } = useSelector((state) => state.auth);
   
-  // Pour les informations du profil, vérifie sessionStorage puis localStorage
-  const [firstName, setFirstName] = useState(sessionStorage.getItem('firstName') || localStorage.getItem('firstName') || '');
-  const [lastName, setLastName] = useState(sessionStorage.getItem('lastName') || localStorage.getItem('lastName') || '');
-  const [userName, setUserName] = useState(username); // Initialise avec la valeur de `username` 
-
+  // Si l'utilisateur n'est pas authentifié, rediriger vers la page de connexion (ou afficher un message d'erreur)
   useEffect(() => {
-    const storedUserName = sessionStorage.getItem('username') || localStorage.getItem('username');
-    if (storedUserName) {
-      setUserName(storedUserName); // Met à jour l'état avec la valeur stockée
+    if (isAuthenticated && token) {
+      dispatch(fetchProfile(token)); // Récupérer les informations utilisateur
     }
-  }, []); // Déclenche au premier rendu
+  }, [dispatch, token, isAuthenticated]);
 
+  // Initialisation des états pour le profil
+  const [userName, setUserName] = useState(user?.username || '');
+  const [firstName, setFirstName] = useState(user?.firstName || '');
+  const [lastName, setLastName] = useState(user?.lastName || '');
+
+  // Gestion de la sauvegarde des modifications
   const handleSave = (e) => {
     e.preventDefault();
     console.log('Saved:', { userName, firstName, lastName });
-    // Mise à jour du localStorage et sessionStorage si nécessaire
-    localStorage.setItem('username', userName); 
-    sessionStorage.setItem('username', userName);
-    localStorage.setItem('firstName', firstName); 
-    sessionStorage.setItem('firstName', firstName);
-    localStorage.setItem('lastName', lastName); 
-    sessionStorage.setItem('lastName', lastName);
+    // Mettre à jour le profil dans le store Redux ou via une API si nécessaire
+    // Pour cet exemple, nous ne mettons à jour que l'état local ici
   };
 
+  // Gestion de l'annulation des modifications
   const handleCancel = () => {
-    setUserName(username); // Restaure la valeur initiale de `username`
-    setFirstName(sessionStorage.getItem('firstName') || localStorage.getItem('firstName') || '');
-    setLastName(sessionStorage.getItem('lastName') || localStorage.getItem('lastName') || '');
+    setUserName(user?.username || ''); // Restaure les données initiales
+    setFirstName(user?.firstName || '');
+    setLastName(user?.lastName || '');
   };
 
   return (
     <div>
-      <Header 
-        token={token} 
-        username={username} 
-        setToken={setToken} 
-        setUsername={setUsername} 
-        pageType="edit"
-      />
+      <Header pageType="edit" />
       <main>
         <div className="form-container">
           <h2 className='edit-title'>Edit user info</h2>

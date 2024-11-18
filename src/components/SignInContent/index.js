@@ -1,86 +1,51 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux'; // Utiliser useSelector pour lire l'état Redux
+import { login } from '../../redux/auth/authSlice'; // Importer l'action login depuis le slice
 import { useNavigate } from 'react-router-dom';
 import './index.css';
 
 export function SignInContent() {
+  // État local pour gérer les champs du formulaire
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [rememberMe, setRememberMe] = useState(false); 
+  const [rememberMe, setRememberMe] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(''); // État local pour afficher un message d'erreur personnalisé
+
+  // Dispatch de Redux et navigation
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // Lire l'erreur d'authentification du store Redux
+  const { error } = useSelector((state) => state.auth);
+
+  // Gérer la soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validation de l'email
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setError("Veuillez entrer une adresse email valide.");
+      setErrorMessage('L\'email est invalide'); // Affichage d'un message d'erreur si l'email est invalide
       return;
     }
 
+    // Réinitialiser l'erreur à chaque nouvelle tentative
+    setErrorMessage('');
+
     try {
-      const response = await fetch('http://localhost:3001/api/v1/user/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      // Envoi de l'action login avec les données du formulaire
+      const action = await dispatch(login({ email, password, rememberMe }));
 
-      const data = await response.json();
-      console.log("Réponse complète de l'API :", data); 
-
-      if (!response.ok) {
-        setError("Email ou mot de passe incorrect")
-        throw new Error(data.message || 'Email ou mot de passe incorrect');
-      }
-
-      const { token } = data.body || {};
-      if (token) {
-        const storage = rememberMe ? localStorage : sessionStorage; // Utilisation de l'état rememberMe
-        storage.setItem('token', token);
-        console.log("Token stocké :", token);
-
-        // Récupère le userName si possible, ou utilise un nom par défaut
-        const userName = email.split('@')[0]; // utilise la première partie de l'email comme userName
-        storage.setItem('username', userName); // Stocke un userName par défaut
-        console.log("Username stocké :", userName);
-
-        // Récupère les informations du profil utilisateur après la connexion
-        const profileResponse = await fetch('http://localhost:3001/api/v1/user/profile', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`, 
-          },
-        });
-
-        const profileData = await profileResponse.json();
-        console.log("Réponse du profil utilisateur :", profileData); 
-
-        if (profileResponse.ok) {
-          const { firstName, lastName, userName: profileUserName } = profileData.body || {};
-          
-          if (firstName) {
-            storage.setItem('firstName', firstName);
-            console.log("First Name stocké :", firstName);
-          }
-          if (lastName) {
-            storage.setItem('lastName', lastName);
-            console.log("Last Name stocké :", lastName);
-          }
-
-          if (profileUserName) {
-            storage.setItem('userName', profileUserName);
-            console.log("Username mis à jour depuis le profil :", profileUserName);
-          }
-        } else {
-          throw new Error('Erreur lors de la récupération du profil utilisateur');
-        }
-        navigate('/user');
+      if (action.error) {
+        // L'erreur est gérée par Redux, mais on peut afficher un message spécifique ici
+        setErrorMessage(action.error.message || 'Erreur lors de la connexion');
       } else {
-        throw new Error('Token manquant dans la réponse');
+        // Redirection vers la page de profil après une connexion réussie
+        navigate('/user');
       }
-    } catch (error) {
-      setError(error.message);
+    } catch (err) {
+      // Gestion des erreurs réseau ou serveur
+      console.error('Erreur réseau ou serveur :', err);
+      setErrorMessage('Erreur réseau ou serveur.');
     }
   };
 
@@ -90,6 +55,7 @@ export function SignInContent() {
         <i className="fa fa-user-circle sign-in-icon"></i>
         <h1>Sign In</h1>
         <form onSubmit={handleSubmit}>
+          {/* Champ pour l'email */}
           <div className="input-wrapper">
             <label htmlFor="email">Username</label>
             <input
@@ -99,8 +65,11 @@ export function SignInContent() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
+              aria-label="Email" // Amélioration de l'accessibilité
             />
           </div>
+
+          {/* Champ pour le mot de passe */}
           <div className="input-wrapper">
             <label htmlFor="password">Password</label>
             <input
@@ -110,19 +79,30 @@ export function SignInContent() {
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
+              aria-label="Password" // Amélioration de l'accessibilité
             />
           </div>
-          {error && <p className="error-message">{error}</p>}
+
+          {/* Affichage de l'erreur provenant de Redux ou de l'état local */}
+          {(error || errorMessage) && (
+            <p className="error-message">{error || errorMessage}</p>
+          )}
+
+          {/* Case à cocher pour "Remember me" */}
           <div className="input-remember">
             <input
               type="checkbox"
               id="remember-me"
-              checked={rememberMe} 
-              onChange={(e) => setRememberMe(e.target.checked)} 
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
             />
             <label htmlFor="remember-me">Remember me</label>
           </div>
-          <button type="submit" className="sign-in-button">Sign In</button>
+
+          {/* Bouton de soumission */}
+          <button type="submit" className="sign-in-button">
+            Sign In
+          </button>
         </form>
       </section>
     </main>

@@ -1,5 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom"; 
+import { useSelector, useDispatch } from "react-redux";
+import { fetchProfile } from "../../redux/auth/authSlice";
 import { Header } from "../../components/header";
 import { Footer } from "../../components/footer";
 import { Tags } from "../../components/tags";
@@ -7,71 +9,36 @@ import { Button } from "../../components/button";
 import './index.css';
 
 export function User() {
-  // Priorise sessionStorage, puis localStorage
-  const [token, setToken] = useState(sessionStorage.getItem('token') || localStorage.getItem('token') || '');
-  const [username, setUsername] = useState(sessionStorage.getItem('username') || localStorage.getItem('username') || '');
-  const [profile, setProfile] = useState(null);
-  const navigate = useNavigate(); 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { token, user } = useSelector((state) => state.auth); // Utilisation du Redux pour récupérer l'utilisateur et le token
+  const firstName = user?.firstName || 'User';
+  const lastName = user?.lastName || '';
 
   useEffect(() => {
-    const storedToken = sessionStorage.getItem('token') || localStorage.getItem('token');
-    if (storedToken) {
-      setToken(storedToken);
-      fetchProfile(storedToken);
+    if (token && !user) {
+      dispatch(fetchProfile(token)); // Récupère les données du profil si le token est présent
     }
-  }, []);
-
-  const fetchProfile = async (token) => {
-    try {
-      const response = await fetch('http://localhost:3001/api/v1/user/profile', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setProfile(data.body);
-      } else {
-        throw new Error('Erreur de récupération du profil');
-      }
-    } catch (error) {
-      console.error('Erreur:', error);
-    }
-  };
+  }, [token, user, dispatch]);
 
   const handleEditClick = () => {
-    navigate('/edit');
+    navigate('/edit'); // Redirection vers la page d'édition 
   };
-
-  const firstName = profile?.firstName || 'User';
-  const lastName = profile?.lastName || '';
 
   return (
     <div>
-      <Header 
-        token={token} 
-        username={username} 
-        setToken={setToken} 
-        setUsername={setUsername} 
-        pageType="user" 
-      />
+      <Header pageType="user" />
       <main className="main bg-dark">
         <div className="header">
           <h1>
             Welcome back <br />
             {firstName} {lastName} ! <br />
           </h1>
-          <Button
-            label="Edit Name"
-            onClick={handleEditClick} 
-          />
+          <Button label="Edit Name" onClick={handleEditClick} /> {/* Utilise handleEditClick avec navigate */}
         </div>
         <h2 className="sr-only">Accounts</h2>
-      <Tags isUserPage={true} />     
-       </main>
+        <Tags isUserPage={true} />
+      </main>
       <Footer />
     </div>
   );
