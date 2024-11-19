@@ -1,49 +1,73 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { fetchProfile } from '../../redux/auth/authSlice';
 import { Header } from '../../components/header/index';
 import { Footer } from '../../components/footer';
 import { Tags } from '../../components/tags';
-import { fetchProfile } from '../../redux/auth/authSlice'; // Import de la fonction pour récupérer le profil
 import './index.css';
 
 export function Edit() {
-  const dispatch = useDispatch();
   const { token, user, isAuthenticated } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
-  // États locaux pour gérer les champs de formulaire
   const [userName, setUserName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // Récupérer le profil utilisateur lorsque le composant se charge
   useEffect(() => {
     if (isAuthenticated && token) {
-      dispatch(fetchProfile(token));
+      setUserName(user?.userName || '');
+      setFirstName(user?.firstName || '');
+      setLastName(user?.lastName || '');
     }
-  }, [dispatch, token, isAuthenticated]);
+  }, [user, isAuthenticated, token]);
 
-  // Mettre à jour les champs locaux lorsque les données utilisateur sont disponibles
-  useEffect(() => {
-    if (user) {
-      setUserName(user.userName || '');
-      setFirstName(user.firstName || '');
-      setLastName(user.lastName || '');
+  const handleSave = async (e) => {
+  e.preventDefault();
+
+  try {
+    const response = await fetch('http://localhost:3001/api/v1/user/profile', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ userName }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Erreur lors de la mise à jour du profil.');
     }
-  }, [user]);
 
-  // Gestion de la sauvegarde des modifications
-  const handleSave = (e) => {
-    e.preventDefault();
-    console.log('Saved:', { userName, firstName, lastName });
-    // Appel à une API pour sauvegarder les données si nécessaire
-    // Exemple : dispatch(updateUserProfile({ userName, firstName, lastName }));
-  };
+    // Mise à jour de l'état local du nom d'utilisateur et affichage du message de succès
+    setSuccessMessage('Nom d\'utilisateur mis à jour avec succès!');
+    setErrorMessage('');  // Efface le message d'erreur s'il y en avait
+    setUserName(data.body.userName); // Mettez à jour l'interface avec le nouveau nom d'utilisateur
 
-  // Gestion de l'annulation des modifications
+    // Mise à jour du profil dans Redux
+    dispatch(fetchProfile());  // Assurez-vous d'avoir un thunk pour récupérer les données actualisées
+
+     setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000); // Masquer après 3 secondes
+
+  } catch (error) {
+    setErrorMessage(error.message || 'Erreur réseau ou serveur.');
+    setSuccessMessage('');
+  }
+};
+
+
   const handleCancel = () => {
     setUserName(user?.userName || '');
     setFirstName(user?.firstName || '');
     setLastName(user?.lastName || '');
+    setSuccessMessage('');
+    setErrorMessage('');
   };
 
   return (
@@ -98,6 +122,10 @@ export function Edit() {
                 </button>
               </div>
             </form>
+            <div className="messages">
+            {successMessage && <div className="success-message">{successMessage}</div>}
+            {errorMessage && <div className="error-message">{errorMessage}</div>}
+            </div>
           </div>
         ) : (
           <div>Chargement des données...</div>
