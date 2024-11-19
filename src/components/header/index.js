@@ -12,8 +12,7 @@ export function Header({ pageType }) {
 
   // Récupérer le token et l'utilisateur depuis Redux
   const { token, user } = useSelector((state) => state.auth);
-  console.log(user)
-
+  
   useEffect(() => {
     // Charger les données du profil si le token est présent
     if (token && !user) {

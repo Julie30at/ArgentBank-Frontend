@@ -29,9 +29,9 @@ export function SignInContent() {
     setErrorMessage('');
 
     try {
-      // Envoi de l'action login avec les données du formulaire
-      const action = await dispatch(login({ email, password, rememberMe }));
-
+     // Envoi de l'action login avec les données du formulaire
+    const action = dispatch(login({ email, password, rememberMe }));
+    
       if (action.error) {
         // Affichage d'un message d'erreur si l'action échoue
         setErrorMessage(action.error.message || 'Erreur lors de la connexion');
