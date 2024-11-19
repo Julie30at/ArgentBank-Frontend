@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // Thunk pour la connexion (login)
 export const login = createAsyncThunk(
   'auth/login',
-  async ({ email, password, rememberMe }, { rejectWithValue }) => {
+  async ({ email, password, rememberMe }) => {
     try {
       const response = await fetch('http://localhost:3001/api/v1/user/login', {
         method: 'POST',
@@ -14,7 +14,7 @@ export const login = createAsyncThunk(
       const data = await response.json();
 
       if (!response.ok) {
-        return rejectWithValue(data.message || 'Email ou mot de passe incorrect');
+        throw new Error(data.message || 'Email ou mot de passe incorrect');
       }
 
       const { token } = data.body || {};
@@ -23,7 +23,7 @@ export const login = createAsyncThunk(
 
       return { token, email, rememberMe };
     } catch (error) {
-      return rejectWithValue('Erreur réseau ou serveur.');
+      throw new Error(error.message || 'Erreur réseau ou serveur.');
     }
   }
 );
@@ -31,7 +31,7 @@ export const login = createAsyncThunk(
 // Thunk pour récupérer le profil utilisateur
 export const fetchProfile = createAsyncThunk(
   'auth/fetchProfile',
-  async (_, { getState, rejectWithValue }) => {
+  async (_, { getState }) => {
     const { token } = getState().auth;
 
     try {
@@ -43,25 +43,23 @@ export const fetchProfile = createAsyncThunk(
       const data = await response.json();
 
       if (!response.ok) {
-        return rejectWithValue('Impossible de récupérer le profil utilisateur.');
+        throw new Error('Impossible de récupérer le profil utilisateur.');
       }
 
       return data.body;
     } catch (error) {
-      return rejectWithValue('Erreur réseau ou serveur.');
+      throw new Error(error.message || 'Erreur réseau ou serveur.');
     }
   }
 );
 
-// Initialiser l'état avec les données du stockage persistant
+// Initialisation de l'état sans gestion des erreurs dans Redux
 const initialState = {
   isAuthenticated: !!(localStorage.getItem('token') || sessionStorage.getItem('token')),
   email: '',
   rememberMe: !!localStorage.getItem('token'),
   token: localStorage.getItem('token') || sessionStorage.getItem('token'),
   user: null,
-  error: null,
-  loading: false,
 };
 
 const authSlice = createSlice({
@@ -83,16 +81,9 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.email = action.payload.email;
         state.rememberMe = action.payload.rememberMe;
-        state.error = null;
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.error = action.payload;
       })
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.user = action.payload;
-      })
-      .addCase(fetchProfile.rejected, (state, action) => {
-        state.error = action.payload;
       });
   },
 });

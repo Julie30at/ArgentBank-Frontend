@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux'; // Utiliser useSelector pour lire l'état Redux
+import { useDispatch } from 'react-redux'; // Pas besoin de useSelector pour l'erreur
 import { login } from '../../redux/auth/authSlice'; // Importer l'action login depuis le slice
 import { useNavigate } from 'react-router-dom';
 import './index.css';
@@ -14,9 +14,6 @@ export function SignInContent() {
   // Dispatch de Redux et navigation
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  // Lire l'erreur d'authentification du store Redux
-  const { error } = useSelector((state) => state.auth);
 
   // Gérer la soumission du formulaire
   const handleSubmit = async (e) => {
@@ -36,7 +33,7 @@ export function SignInContent() {
       const action = await dispatch(login({ email, password, rememberMe }));
 
       if (action.error) {
-        // L'erreur est gérée par Redux, mais on peut afficher un message spécifique ici
+        // Affichage d'un message d'erreur si l'action échoue
         setErrorMessage(action.error.message || 'Erreur lors de la connexion');
       } else {
         // Redirection vers la page de profil après une connexion réussie
@@ -83,10 +80,8 @@ export function SignInContent() {
             />
           </div>
 
-          {/* Affichage de l'erreur provenant de Redux ou de l'état local */}
-          {(error || errorMessage) && (
-            <p className="error-message">{error || errorMessage}</p>
-          )}
+          {/* Affichage de l'erreur provenant de l'état local */}
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
 
           {/* Case à cocher pour "Remember me" */}
           <div className="input-remember">
