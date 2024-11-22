@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux'; // Pas besoin de useSelector pour l'erreur
-import { login, fetchProfile } from '../../redux/auth/authSlice'; // Importer l'action login depuis le slice
+import { useDispatch } from 'react-redux';
+import { login, fetchProfile } from '../../redux/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
 
@@ -8,47 +8,45 @@ export function SignInContent() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(''); // Gère les erreurs localement
+  const [errorMessage, setErrorMessage] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
- const handleSubmit = (e) => {
-  e.preventDefault();
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  // Validation locale de l'email
-  if (!/\S+@\S+\.\S+/.test(email)) {
-    setErrorMessage('L\'email est invalide.');
-    return;
-  }
-
-  setErrorMessage(''); // Réinitialise le message d'erreur
-
-  const action = dispatch(login({ email, password, rememberMe }));
-
-  // Utilisez un callback de `then` pour traiter le résultat de l'action de login
-  action.then((result) => {
-    if (login.fulfilled.match(result)) {
-      // Si la connexion réussit, essayer de récupérer le profil
-      dispatch(fetchProfile()).then((profileAction) => {
-        if (fetchProfile.fulfilled.match(profileAction)) {
-          // Si la récupération du profil réussit, redirige l'utilisateur
-          navigate('/user');
-        } else {
-          // Si la récupération du profil échoue, afficher une erreur sans rediriger
-          setErrorMessage(profileAction.payload || 'Impossible de récupérer le profil.');
-        }
-      });
-    } else {
-      // Si la connexion échoue, affiche l'erreur retournée
-      setErrorMessage(result.payload || 'Nom d\'utilisateur ou mot de passe invalide.');
+    // Validation locale de l'email
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setErrorMessage('L\'email est invalide.');
+      return;
     }
-  }).catch((err) => {
-    // Gestion des erreurs réseau ou autres
-    console.error('Erreur réseau ou serveur :', err);
-    setErrorMessage('Erreur réseau ou serveur.');
-  });
-};
 
+    setErrorMessage(''); // Réinitialise le message d'erreur
+
+    const action = dispatch(login({ email, password, rememberMe }));
+
+    // Utilisation de `then` pour gérer le résultat de l'action
+    action.then((result) => {
+      if (login.fulfilled.match(result)) {
+        // Si la connexion réussit, récupérer le profil
+        dispatch(fetchProfile()).then((profileAction) => {
+          if (fetchProfile.fulfilled.match(profileAction)) {
+            navigate('/user');
+          } else {
+            // Si la récupération du profil échoue, afficher une erreur sans rediriger
+            setErrorMessage(profileAction.payload || 'Impossible de récupérer le profil.');
+          }
+        });
+      } else {
+        // Si la connexion échoue, afficher l'erreur retournée
+        setErrorMessage(result.payload || 'Nom d\'utilisateur ou mot de passe invalide.');
+      }
+    }).catch((err) => {
+      // Gestion des erreurs réseau ou autres
+      console.error('Erreur réseau ou serveur :', err);
+      setErrorMessage('Erreur réseau ou serveur.');
+    });
+  };
 
   return (
     <main className="main bg-dark">

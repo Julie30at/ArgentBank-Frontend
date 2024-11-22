@@ -66,7 +66,6 @@ const initialState = {
   rememberMe: !!localStorage.getItem('token'),
   token: localStorage.getItem('token') || sessionStorage.getItem('token'),
   user: null,
-  error: null, // Permet de capturer des erreurs globales si besoin
 };
 
 // authSlice
@@ -79,7 +78,6 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.token = null;
       state.user = null;
-      state.error = null;
       sessionStorage.clear();
       localStorage.clear();
     },
@@ -92,18 +90,10 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.email = action.payload.email;
         state.rememberMe = action.payload.rememberMe;
-        state.error = null; // Réinitialise l'erreur en cas de succès
-      })
-      .addCase(login.rejected, (state, action) => {
-        state.error = action.payload; // Stocke le message d'erreur en cas d'échec
       })
       // Gestion du profil utilisateur
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.user = action.payload;
-        state.error = null; // Réinitialise l'erreur en cas de succès
-      })
-      .addCase(fetchProfile.rejected, (state, action) => {
-        state.error = action.payload; // Stocke le message d'erreur en cas d'échec
       });
   },
 });
