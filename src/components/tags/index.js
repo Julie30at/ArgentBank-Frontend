@@ -55,7 +55,7 @@ export function Tags({ isTransactionPage, isEditPage, isUserPage }) {
             </div>
             <div className="account-content-wrapper cta">
               <NavLink to="/transactions" className="arrow-right">
-                <i class="fa fa-solid fa-chevron-right"></i>
+                <i className="fa fa-solid fa-chevron-right"></i>
               </NavLink>
             </div>
           </section>
@@ -68,7 +68,7 @@ export function Tags({ isTransactionPage, isEditPage, isUserPage }) {
             </div>
             <div className="account-content-wrapper cta">
              <NavLink to="/transactions" className="arrow-right">
-                <i class="fa fa-solid fa-chevron-right"></i>
+                <i className="fa fa-solid fa-chevron-right"></i>
               </NavLink>
             </div>
           </section>
@@ -81,7 +81,7 @@ export function Tags({ isTransactionPage, isEditPage, isUserPage }) {
             </div>
             <div className="account-content-wrapper cta">
               <NavLink to="/transactions" className="arrow-right">
-                <i class="fa fa-solid fa-chevron-right"></i>
+                <i className="fa fa-solid fa-chevron-right"></i>
               </NavLink>
             </div>
           </section>

@@ -10,13 +10,14 @@ import { Transactions } from './pages/transactions';
 
 function App() {
   const dispatch = useDispatch();
-  const { isAuthenticated, token } = useSelector((state) => state.auth);
+  const { isAuthenticated, token, profile } = useSelector((state) => state.auth); // Ajout de profile
 
+  // Chargement conditionnel du profil utilisateur
   useEffect(() => {
-    if (isAuthenticated && token) {
+    if (isAuthenticated && token && !profile) {
       dispatch(fetchProfile());
     }
-  }, [isAuthenticated, token, dispatch]);
+  }, [isAuthenticated, token, profile, dispatch]); // Ajout de profile dans les dépendances
 
   return (
     <Router>

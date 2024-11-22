@@ -3,8 +3,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 // Thunk pour la connexion (login)
 export const login = createAsyncThunk(
   'auth/login',
-  async ({ email, password, rememberMe }) => {
+  async ({ email, password, rememberMe }, { rejectWithValue }) => {
     try {
+      // Appel API pour la connexion
       const response = await fetch('http://localhost:3001/api/v1/user/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -14,16 +15,19 @@ export const login = createAsyncThunk(
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Email ou mot de passe incorrect');
+        // Retourne un message d'erreur précis si disponible
+        return rejectWithValue(data.message || 'Email ou mot de passe incorrect.');
       }
 
       const { token } = data.body || {};
+      // Stocke le token selon `rememberMe` (localStorage ou sessionStorage)
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem('token', token);
 
       return { token, email, rememberMe };
     } catch (error) {
-      throw new Error(error.message || 'Erreur réseau ou serveur.');
+      // Retourne une erreur réseau ou serveur
+      return rejectWithValue(error.message || 'Erreur réseau ou serveur.');
     }
   }
 );
@@ -31,9 +35,8 @@ export const login = createAsyncThunk(
 // Thunk pour récupérer le profil utilisateur
 export const fetchProfile = createAsyncThunk(
   'auth/fetchProfile',
-  async (_, { getState }) => {
-    const { token } = getState().auth;
-
+  async (_, { getState, rejectWithValue }) => {
+    const { token } = getState().auth; // Récupère le token dans l'état global
     try {
       const response = await fetch('http://localhost:3001/api/v1/user/profile', {
         method: 'GET',
@@ -43,50 +46,65 @@ export const fetchProfile = createAsyncThunk(
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error('Impossible de récupérer le profil utilisateur.');
+        return rejectWithValue('Impossible de récupérer le profil utilisateur.');
       }
 
-      return data.body;
+      return data.body; // Retourne les données utilisateur si tout est OK
     } catch (error) {
-      throw new Error(error.message || 'Erreur réseau ou serveur.');
+      return rejectWithValue(error.message || 'Erreur réseau ou serveur.');
     }
   }
 );
 
-// Initialisation de l'état sans gestion des erreurs dans Redux
+// État initial
 const initialState = {
   isAuthenticated: !!(localStorage.getItem('token') || sessionStorage.getItem('token')),
   email: '',
   rememberMe: !!localStorage.getItem('token'),
   token: localStorage.getItem('token') || sessionStorage.getItem('token'),
   user: null,
+  error: null, // Permet de capturer des erreurs globales si besoin
 };
 
+// authSlice
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
     logout(state) {
+      // Déconnexion : réinitialise les données d'authentification
       state.isAuthenticated = false;
       state.token = null;
       state.user = null;
+      state.error = null;
       sessionStorage.clear();
       localStorage.clear();
     },
   },
   extraReducers: (builder) => {
     builder
+      // Gestion du login
       .addCase(login.fulfilled, (state, action) => {
         state.isAuthenticated = true;
         state.token = action.payload.token;
         state.email = action.payload.email;
         state.rememberMe = action.payload.rememberMe;
+        state.error = null; // Réinitialise l'erreur en cas de succès
       })
+      .addCase(login.rejected, (state, action) => {
+        state.error = action.payload; // Stocke le message d'erreur en cas d'échec
+      })
+      // Gestion du profil utilisateur
       .addCase(fetchProfile.fulfilled, (state, action) => {
         state.user = action.payload;
+        state.error = null; // Réinitialise l'erreur en cas de succès
+      })
+      .addCase(fetchProfile.rejected, (state, action) => {
+        state.error = action.payload; // Stocke le message d'erreur en cas d'échec
       });
   },
 });
 
 export const { logout } = authSlice.actions;
+
 export default authSlice.reducer;
