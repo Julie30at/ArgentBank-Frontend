@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux'; // Pas besoin de useSelector pour l'erreur
-import { login } from '../../redux/auth/authSlice'; // Importer l'action login depuis le slice
+import { login, fetchProfile } from '../../redux/auth/authSlice'; // Importer l'action login depuis le slice
 import { useNavigate } from 'react-router-dom';
 import './index.css';
 
@@ -12,34 +12,43 @@ export function SignInContent() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = (e) => {
+  e.preventDefault();
 
-    // Validation locale de l'email
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      setErrorMessage('L\'email est invalide.');
-      return;
+  // Validation locale de l'email
+  if (!/\S+@\S+\.\S+/.test(email)) {
+    setErrorMessage('L\'email est invalide.');
+    return;
+  }
+
+  setErrorMessage(''); // Réinitialise le message d'erreur
+
+  const action = dispatch(login({ email, password, rememberMe }));
+
+  // Utilisez un callback de `then` pour traiter le résultat de l'action de login
+  action.then((result) => {
+    if (login.fulfilled.match(result)) {
+      // Si la connexion réussit, essayer de récupérer le profil
+      dispatch(fetchProfile()).then((profileAction) => {
+        if (fetchProfile.fulfilled.match(profileAction)) {
+          // Si la récupération du profil réussit, redirige l'utilisateur
+          navigate('/user');
+        } else {
+          // Si la récupération du profil échoue, afficher une erreur sans rediriger
+          setErrorMessage(profileAction.payload || 'Impossible de récupérer le profil.');
+        }
+      });
+    } else {
+      // Si la connexion échoue, affiche l'erreur retournée
+      setErrorMessage(result.payload || 'Nom d\'utilisateur ou mot de passe invalide.');
     }
+  }).catch((err) => {
+    // Gestion des erreurs réseau ou autres
+    console.error('Erreur réseau ou serveur :', err);
+    setErrorMessage('Erreur réseau ou serveur.');
+  });
+};
 
-    setErrorMessage(''); // Réinitialise le message d'erreur
-
-    try {
-      // Envoi des données pour la connexion
-      const action = await dispatch(login({ email, password, rememberMe }));
-
-      if (login.fulfilled.match(action)) {
-        // Si la connexion réussit, redirige l'utilisateur
-        navigate('/user');
-      } else if (login.rejected.match(action)) {
-        // Si la connexion échoue, affiche l'erreur retournée
-        setErrorMessage(action.payload || 'Nom d\'utilisateur ou mot de passe invalide.');
-      }
-    } catch (err) {
-      // Gestion des erreurs réseau ou autres
-      console.error('Erreur réseau ou serveur :', err);
-      setErrorMessage('Erreur réseau ou serveur.');
-    }
-  };
 
   return (
     <main className="main bg-dark">

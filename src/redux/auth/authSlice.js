@@ -36,22 +36,25 @@ export const login = createAsyncThunk(
 export const fetchProfile = createAsyncThunk(
   'auth/fetchProfile',
   async (_, { getState, rejectWithValue }) => {
-    const { token } = getState().auth; // Récupère le token dans l'état global
+    const { token } = getState().auth;
     try {
       const response = await fetch('http://localhost:3001/api/v1/user/profile', {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      // Tentative de récupération du corps de la réponse, si disponible
       const data = await response.json();
 
       if (!response.ok) {
-        return rejectWithValue('Impossible de récupérer le profil utilisateur.');
+        // Si la réponse n'est pas ok, on retourne un message générique
+        return rejectWithValue('Erreur serveur');
       }
 
-      return data.body; // Retourne les données utilisateur si tout est OK
+      return data.body;
     } catch (error) {
-      return rejectWithValue(error.message || 'Erreur réseau ou serveur.');
+      // En cas d'erreur réseau ou autre erreur serveur, on retourne un message générique
+      return rejectWithValue('Erreur serveur');
     }
   }
 );
