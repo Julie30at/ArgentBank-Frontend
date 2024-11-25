@@ -7,26 +7,48 @@ import { Connexion } from './pages/connexion';
 import { User } from './pages/user';
 import { Edit } from './pages/edit';
 import { Transactions } from './pages/transactions';
+import { PrivateRoute } from './redux/auth/privateRoute'; 
 
 function App() {
   const dispatch = useDispatch();
-  const { isAuthenticated, token, user } = useSelector((state) => state.auth); // Ajout de profile
+  const { isAuthenticated, token, user } = useSelector((state) => state.auth);
 
-  // Chargement conditionnel du profil utilisateur
   useEffect(() => {
     if (isAuthenticated && token && !user) {
       dispatch(fetchProfile());
     }
-  }, [isAuthenticated, token, user, dispatch]); // Ajout de profile dans les dépendances
+  }, [isAuthenticated, token, user, dispatch]);
 
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/connexion" element={<Connexion />} />
-        <Route path="/user" element={<User />} />
-        <Route path="/edit" element={<Edit />} />
-        <Route path="/transactions" element={<Transactions />} />
+        {/* Routes protégées */}
+        <Route
+          path="/user"
+          element={
+            <PrivateRoute>
+              <User />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/edit"
+          element={
+            <PrivateRoute>
+              <Edit />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/transactions"
+          element={
+            <PrivateRoute>
+              <Transactions />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );
