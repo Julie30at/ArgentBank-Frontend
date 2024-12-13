@@ -25,7 +25,6 @@ export function SignInContent() {
 
     const action = dispatch(login({ email, password, rememberMe }));
 
-    // Utilisation de `then` pour gérer le résultat de l'action
     action.then((result) => {
       if (login.fulfilled.match(result)) {
         // Si la connexion réussit, récupérer le profil

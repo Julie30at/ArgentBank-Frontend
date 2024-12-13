@@ -43,24 +43,21 @@ export function Edit() {
       throw new Error(data.message || 'Erreur lors de la mise à jour du profil.');
     }
 
-    // Mise à jour de l'état local du nom d'utilisateur et affichage du message de succès
     setSuccessMessage('Nom d\'utilisateur mis à jour avec succès!');
-    setErrorMessage('');  // Efface le message d'erreur s'il y en avait
+    setErrorMessage('');  
     setUserName(data.body.userName); // Mettez à jour l'interface avec le nouveau nom d'utilisateur
 
-    // Mise à jour du profil dans Redux
-    dispatch(fetchProfile());  // Assurez-vous d'avoir un thunk pour récupérer les données actualisées
+    dispatch(fetchProfile());  
 
      setTimeout(() => {
         setSuccessMessage('');
-      }, 3000); // Masquer après 3 secondes
+      }, 3000); 
 
   } catch (error) {
     setErrorMessage(error.message || 'Erreur réseau ou serveur.');
     setSuccessMessage('');
   }
 };
-
 
   const handleCancel = () => {
     setUserName(user?.userName || '');

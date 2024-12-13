@@ -24,6 +24,7 @@ function App() {
       <Routes>
         <Route path="/*" element={<Home />} />
         <Route path="/connexion" element={<Connexion />} />
+        
         {/* Routes protégées */}
         <Route
           path="/user"

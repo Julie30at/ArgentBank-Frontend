@@ -5,7 +5,6 @@ export const login = createAsyncThunk(
   'auth/login',
   async ({ email, password, rememberMe }, { rejectWithValue }) => {
     try {
-      // Appel API pour la connexion
       const response = await fetch('http://localhost:3001/api/v1/user/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -15,7 +14,6 @@ export const login = createAsyncThunk(
       const data = await response.json();
 
       if (!response.ok) {
-        // Retourne un message d'erreur précis si disponible
         return rejectWithValue(data.message || 'Email ou mot de passe incorrect.');
       }
 
@@ -26,7 +24,6 @@ export const login = createAsyncThunk(
 
       return { token, email, rememberMe };
     } catch (error) {
-      // Retourne une erreur réseau ou serveur
       return rejectWithValue(error.message || 'Erreur réseau ou serveur.');
     }
   }
@@ -43,17 +40,14 @@ export const fetchProfile = createAsyncThunk(
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // Tentative de récupération du corps de la réponse, si disponible
       const data = await response.json();
 
       if (!response.ok) {
-        // Si la réponse n'est pas ok, on retourne un message générique
         return rejectWithValue('Erreur serveur');
       }
 
       return data.body;
     } catch (error) {
-      // En cas d'erreur réseau ou autre erreur serveur, on retourne un message générique
       return rejectWithValue('Erreur serveur');
     }
   }
