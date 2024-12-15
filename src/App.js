@@ -11,13 +11,13 @@ import { PrivateRoute } from './redux/auth/privateRoute';
 
 function App() {
   const dispatch = useDispatch();
-  const { isAuthenticated, token, user } = useSelector((state) => state.auth);
+  const { isAuthenticated, token } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (isAuthenticated && token && !user) {
+    if (isAuthenticated && token) {
       dispatch(fetchProfile());
     }
-  }, [isAuthenticated, token, user, dispatch]);
+  }, [isAuthenticated, token, dispatch]);
 
   return (
     <Router>
