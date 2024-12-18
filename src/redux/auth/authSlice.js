@@ -53,6 +53,34 @@ export const fetchProfile = createAsyncThunk(
   }
 );
 
+// Thunk pour la mise à jour du profil utilisateur
+export const updateProfile = createAsyncThunk(
+  'auth/updateProfile',
+  async ({ userName }, { getState, rejectWithValue }) => {
+    const { token } = getState().auth;
+    try {
+      const response = await fetch('http://localhost:3001/api/v1/user/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userName }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return rejectWithValue(data.message || 'Erreur lors de la mise à jour du profil.');
+      }
+
+      return data.body;
+    } catch (error) {
+      return rejectWithValue(error.message || 'Erreur réseau ou serveur.');
+    }
+  }
+);
+
 // État initial
 const initialState = {
   isAuthenticated: !!(localStorage.getItem('token') || sessionStorage.getItem('token')),
@@ -88,6 +116,10 @@ const authSlice = createSlice({
       })
       // Gestion du profil utilisateur
       .addCase(fetchProfile.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
+      // Mise à jour du profil utilisateur
+      .addCase(updateProfile.fulfilled, (state, action) => {
         state.user = action.payload;
       });
   },

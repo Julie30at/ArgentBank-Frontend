@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchProfile } from '../../redux/auth/authSlice';
+import { fetchProfile, updateProfile } from '../../redux/auth/authSlice';
 import { Header } from '../../components/header/index';
 import { Footer } from '../../components/footer';
 import { Tags } from '../../components/tags';
@@ -18,45 +18,40 @@ export function Edit() {
 
   useEffect(() => {
     if (isAuthenticated && token) {
+      dispatch(fetchProfile());  
+    }
+  }, [isAuthenticated, token, dispatch]);
+
+  useEffect(() => {
+    if (user) {
       setUserName(user?.userName || '');
       setFirstName(user?.firstName || '');
       setLastName(user?.lastName || '');
     }
-  }, [user, isAuthenticated, token]);
+  }, [user]);
 
-  const handleSave = async (e) => {
+const handleSave = (e) => {
   e.preventDefault();
 
-  try {
-    const response = await fetch('http://localhost:3001/api/v1/user/profile', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ userName }),
-    });
+  setErrorMessage(''); 
 
-    const data = await response.json();
+  // Dispatch l'action pour mettre à jour le profil utilisateur
+  const action = dispatch(updateProfile({ userName }));
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Erreur lors de la mise à jour du profil.');
+  action.then((result) => {
+    if (updateProfile.fulfilled.match(result)) {
+      setSuccessMessage('Nom d\'utilisateur mis à jour avec succès!');
+      setTimeout(() => {
+        setSuccessMessage(''); 
+      }, 3000);
+    } else {
+      setErrorMessage(result.payload || 'Erreur lors de la mise à jour du profil.');
     }
-
-    setSuccessMessage('Nom d\'utilisateur mis à jour avec succès!');
-    setErrorMessage('');  
-    setUserName(data.body.userName); // Mettez à jour l'interface avec le nouveau nom d'utilisateur
-
-    dispatch(fetchProfile());  
-
-     setTimeout(() => {
-        setSuccessMessage('');
-      }, 3000); 
-
-  } catch (error) {
-    setErrorMessage(error.message || 'Erreur réseau ou serveur.');
+  }).catch((err) => {
+    console.error('Erreur réseau ou serveur :', err);
+    setErrorMessage('Erreur réseau ou serveur.');
     setSuccessMessage('');
-  }
+  });
 };
 
   const handleCancel = () => {
@@ -120,8 +115,8 @@ export function Edit() {
               </div>
             </form>
             <div className="messages">
-            {successMessage && <div className="success-message">{successMessage}</div>}
-            {errorMessage && <div className="error-message">{errorMessage}</div>}
+              {successMessage && <div className="success-message">{successMessage}</div>}
+              {errorMessage && <div className="error-message">{errorMessage}</div>}
             </div>
           </div>
         ) : (
